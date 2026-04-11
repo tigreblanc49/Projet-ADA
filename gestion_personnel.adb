@@ -32,10 +32,12 @@ Procedure ajout_pers (Liste : in out t_ptr_pers; P : in T_pers) is
         Meme_NP (Liste.val.identite.Prenom, P.identite.Prenom,B2);
         if B1 = true and then B2 = true then
             If Liste.val.ingenieur = P.ingenieur then
-                Put("Un membre du personnel existe deja avec ces identifiants et le même role."); new_line;
+                Put("Un membre du personnel existe deja avec ces identifiants et le mÃªme role."); new_line;
             else
                 ajout_pers (Liste.suiv, P );
             end if;
+        else
+            ajout_pers(Liste.suiv, P);
         end if;
     end if;
 end ajout_pers;
