@@ -121,7 +121,7 @@ end Charger_Donnees_l;
 
      RETURN Total;
   END Calculfacture;
-  
+
 PROCEDURE Affi_Une_Location(Loc : IN T_Location) IS
 BEGIN
     Put("Numero : "); Put(Loc.Id, 1); New_Line;
@@ -135,7 +135,7 @@ BEGIN
 END Affi_Une_Location;
 
 
-PROCEDURE Afficher_Loc_Client(Liste : IN T_Ptr_Location; 
+PROCEDURE Afficher_Loc_Client(Liste : IN T_Ptr_Location;
                                          Client_Cherche : IN T_Identite) IS
    P : T_Ptr_Location := Liste;
    B1, B2 : Boolean;
@@ -144,20 +144,20 @@ BEGIN
       Meme_NP(P.Val.Client.Nom, Client_Cherche.Nom, B1);
       Meme_NP(P.Val.Client.Prenom, Client_Cherche.Prenom, B2);
       IF B1 AND B2 THEN
-         Affi_Une_Location(P.Val); 
+         Affi_Une_Location(P.Val);
       END IF;
       P := P.Suiv;
    END LOOP;
 END Afficher_Loc_Client;
 
 
-PROCEDURE Visu_Locations_Client(L_En_Cours : IN T_Ptr_Location; 
-                                L_Archives : IN T_Ptr_Location; 
+PROCEDURE Visu_Locations_Client(L_En_Cours : IN T_Ptr_Location;
+                                L_Archives : IN T_Ptr_Location;
                                 Client_Cherche : IN T_Identite) IS
 BEGIN
    New_Line;
    Put_Line(" LOCATIONS EN COURS ");
-   Afficher_Loc_Client(L_En_Cours, Client_Cherche); 
+   Afficher_Loc_Client(L_En_Cours, Client_Cherche);
    New_Line;
    Put_Line(" LOCATIONS ARCHIVEES ");
    Afficher_Loc_Client(L_Archives, Client_Cherche);
@@ -173,30 +173,30 @@ BEGIN
    WHILE P /= NULL LOOP
       Meme_NP(P.Val.Noma.Nom, ID_Emp.Nom, B1);
       Meme_NP(P.Val.Noma.Prenom, ID_Emp.Prenom, B2);
-      
+
       IF B1 AND B2 THEN
          Affi_Une_Location(P.Val);
       END IF;
-      
+
       P := P.Suiv;
    END LOOP;
 END Afficher_Loc_Employe;
 
-PROCEDURE Visu_Par_Employe(L_En_Cours : IN T_Ptr_Location; 
-                           L_Archives : IN T_Ptr_Location; 
+PROCEDURE Visu_Par_Employe(L_En_Cours : IN T_Ptr_Location;
+                           L_Archives : IN T_Ptr_Location;
                            Nom_Emp    : IN T_Identite) IS
 BEGIN
    New_Line;
-   Put("LOCATIONS ACCOMPAGNEES PAR : "); 
-   Affi_Identite(Nom_Emp); 
+   Put("LOCATIONS ACCOMPAGNEES PAR : ");
+   Affi_Identite(Nom_Emp);
    New_Line;
    Put_Line("EN COURS");
    Afficher_Loc_Employe(L_En_Cours, Nom_Emp);
-   
+
    New_Line;
    Put_Line(" (ARCHIVES)");
    Afficher_Loc_Employe(L_Archives, Nom_Emp);
-   
+
    Put_Line("-------------------------------");
    New_Line;
 END Visu_Par_Employe;
@@ -206,7 +206,7 @@ PROCEDURE Archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT 
    Prix : Integer;
 
 BEGIN
-   
+
    IF Liste_EC /= NULL THEN
       IF AvantD(Liste_EC.Val.Date_F, Date_Ref) THEN
          Prix := Calculfacture(Liste_EC.Val);
@@ -215,21 +215,21 @@ BEGIN
          IF Liste_EC.Val.Accompagnant /= Aucun THEN
             Liberer_pers(Liste_P, Liste_EC.Val.Noma);
          END IF;
-         
+
         A_Archiver := Liste_EC;
-        Liste_EC := Liste_EC.Suiv; 
-        A_Archiver.Suiv := Liste_Arch; 
+        Liste_EC := Liste_EC.Suiv;
+        A_Archiver.Suiv := Liste_Arch;
         Liste_Arch := A_Archiver;
         Archivages(Liste_EC, Liste_Arch, Date_Ref, Racine_C, Liste_M, Liste_P);
       ELSE
         Archivages(Liste_EC.Suiv, Liste_Arch, Date_Ref, Racine_C, Liste_M, Liste_P);
       END IF;
    END IF;
-   
-      
+
+
 END Archivages;
-            
-         
+
+
 pROCEDURE Traiter_File_Demandes(
     F_Demandes : IN OUT T_File_Demande;
     L_En_Cours : IN OUT T_Ptr_Location;
@@ -238,13 +238,13 @@ pROCEDURE Traiter_File_Demandes(
     Date_Jour  : IN T_Date) IS
 
    D : T_demande;
-   
-   Faux : T_File_Demande;    
+
+   Faux : T_File_Demande;
    P_Mat : T_Ptr_Materiel;
    P_Pers : T_Ptr_Pers;
    ok:boolean;
    Ok_Mat, Ok_Pers : Boolean;
-   
+
 BEGIN
    Faux.Tete:=NULL;
    Faux.fin:=null;
@@ -254,20 +254,20 @@ BEGIN
       P_Mat := Meuilleurpa(Liste_M, D.Materiel);
       IF P_MAT /= NULL THEN
          Ok_MAT := True;
-         
+
       ELSE
-         
+
          Ok_MAT := False;
-         
+
       END IF;
         IF D.Accompagnement /= Aucun THEN
             P_Pers := meuilleurp(Liste_P, (D.Accompagnement = Ingenieur));
          IF P_Pers /= NULL THEN
-            
-            Ok_Pers := True; 
+
+            Ok_Pers := True;
          ELSE
             Ok_Pers := False;
-            
+
          END IF;
 
         ELSE
@@ -284,11 +284,11 @@ BEGIN
 
 
             Inserer_De_Demande(L_En_Cours, D, P_Mat.Val.id, P_Pers, Date_Jour,D.attente);
-            
+
             Put_Line("Demande satisfaite");
         ELSE
-            
-         D.Attente := D.Attente + 1; 
+
+         D.Attente := D.Attente + 1;
          Enfilerd(Faux, D);
         END IF;
    END LOOP;
@@ -300,15 +300,15 @@ PROCEDURE Inserer_De_Demande(
     Tetel      : IN OUT T_Ptr_Location;
     D          : IN T_demande;
     Num_Pack   : IN Natural;
-    P_Pers     : IN T_Ptr_Pers; 
+    P_Pers     : IN T_Ptr_Pers;
    Date_Debut : IN T_Date;
       attente_F: in integer) IS
 
     Date_Fin : T_Date;
-   Identite_Nulle : T_Identite; 
+   Identite_Nulle : T_Identite;
    no:T_identite;
 BEGIN
-    
+
     Date_Fin := Date_Debut;
     FOR I IN 1..D.Duree LOOP
        date_fin:=lendemain(Date_Fin);
@@ -316,32 +316,32 @@ BEGIN
 
 
     IF P_Pers = NULL THEN
-        Identite_Nulle.Nom.K := 0; 
+        Identite_Nulle.Nom.K := 0;
         Identite_Nulle.Prenom.K := 0;
     END IF;
-   IF P_Pers /= NULL 
-         THEN 
+   IF P_Pers /= NULL
+         THEN
       No:=P_Pers.Val.identite;
-       
-      ELSE 
+
+      ELSE
       no:=Identite_Nulle;
       END IF;
-      
-         
+
+
 
 
     Inserer(
          Tetel,
-         Num_Pack,        
-         D.Client,        
-        D.Duree,        
+         Num_Pack,
+         D.Client,
+        D.Duree,
        Date_Debut.J,
        Date_Debut.M,
         Date_Debut.Annee,
          Date_Fin.J,
         Date_Fin.M,
          Date_Fin.Annee,
-         attente_F, 
+         attente_F,
          D.Accompagnement,
         no,
         D.Materiel
@@ -357,7 +357,7 @@ procedure lendemaind(Date_j   : IN OUT T_Date;
     Liste_M    : IN OUT T_Ptr_Materiel;
    Liste_P    : IN OUT T_Ptr_Pers
    ) IS
-         
+
 BEGIN
    Date_J:=Lendemain(Date_J);
    VisuDate(Date_j);
@@ -367,5 +367,6 @@ BEGIN
    Put_Line("mise a jours terminee");
 END Lendemaind;
 
-   
+
 END Gestion_Location;
+
