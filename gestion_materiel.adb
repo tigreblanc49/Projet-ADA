@@ -192,7 +192,7 @@ end Charger_Donnees_Initiales;
    END Meuilleurpa;
 
 
-   PROCEDURE Liberer_Pack(Tete: T_Ptr_Materiel;Npack: natural) IS
+   PROCEDURE Liberer_Pack(Tete: in out T_Ptr_Materiel;Npack: in natural) IS
       P:T_Ptr_Materiel:=Tete;
    BEGIN
       WHILE P/=NULL LOOP

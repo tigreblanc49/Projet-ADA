@@ -29,7 +29,7 @@ PROCEDURE Ajoutpack (Tete: IN OUT T_Ptr_Materiel) ;
    PROCEDURE Visupackdispo(Tete: IN T_Ptr_Materiel);
    PROCEDURE SuppackD( Tete: IN OUT T_Ptr_Materiel; D2: IN T_Date );
    FUNCTION Meuilleurpa(Pa:T_Ptr_Materiel; Cat:T_Type_Materiel) RETURN T_Ptr_Materiel;
-   procedure liberer_pack(tete: T_ptr_materiel;npack: natural);
+   procedure liberer_pack(tete: in out T_ptr_materiel;npack: in natural);
 
 END Gestion_Materiel;
 

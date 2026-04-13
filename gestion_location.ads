@@ -5,6 +5,7 @@ PACKAGE Gestion_Location IS
 
    TYPE T_Location IS RECORD
       Id:Natural;
+      num:integer;
       Client:T_Identite;
       Duree:Integer;
       Date_D:T_Date;
@@ -22,7 +23,8 @@ PACKAGE Gestion_Location IS
       Suiv:T_Ptr_Location;
    END RECORD;
    PROCEDURE Inserer(Tetel : IN OUT T_ptr_location;
-      Id : Natural;
+      Ids : Natural;
+      nump: integer;
       Client : T_identite;
       Duree : Integer;
       jd: integer;
@@ -43,16 +45,16 @@ PACKAGE Gestion_Location IS
    PROCEDURE Visu_Locations_Client(L_En_Cours : IN T_Ptr_Location; L_Archives : IN T_Ptr_Location; Client_Cherche : IN T_Identite);
    PROCEDURE Afficher_Loc_Employe(Liste  : IN T_Ptr_Location; ID_Emp : IN T_Identite);
    PROCEDURE Visu_Par_Employe(L_En_Cours : IN T_Ptr_Location; L_Archives : IN T_Ptr_Location; Nom_Emp : IN T_Identite);
-   procedure archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT T_Ptr_Location;
-      Date_Ref   : IN T_Date;
+--   procedure archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT T_Ptr_Location;
+--      Date_Ref   : IN T_Date;loc,
 
-      Racine_C   : IN OUT T_Ptr_Client;
+--      Racine_C   : IN OUT T_Ptr_Client;
 
-      Liste_M    : IN OUT T_Ptr_Materiel;
+--      Liste_M    : IN OUT T_Ptr_Materiel;
 
-      Liste_P    : IN OUT T_Ptr_Pers);
+--      Liste_P    : IN OUT T_Ptr_Pers);
 
-
+PROCEDURE Archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT T_Ptr_Location; Date_Ref : IN T_Date; Racine_C   : IN OUT T_Ptr_Client; Liste_M : IN OUT T_Ptr_Materiel; Liste_P : IN OUT T_Ptr_Pers);
 
  pROCEDURE Traiter_File_Demandes(
     F_Demandes : IN OUT T_File_Demande;
@@ -70,8 +72,9 @@ procedure lendemaind(Date_j   : IN OUT T_Date;
     Liste_P    : IN OUT T_Ptr_Pers);
 
 procedure Inserer_De_Demande(     Tetel      : IN OUT T_Ptr_Location;
-    D          : IN T_demande;
-    Num_Pack   : IN Natural;
+   D          : IN T_Demande;
+   nump:in integer;
+
     P_Pers     : IN T_Ptr_Pers;
    Date_Debut : IN T_Date;
    attente_F: in integer

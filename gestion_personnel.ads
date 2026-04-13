@@ -27,7 +27,8 @@ procedure supprimer_pers (Liste : in out t_ptr_pers);
 procedure visu_mb_pers (Liste : in t_ptr_pers; P : in T_pers);
 PROCEDURE Visu_Membre_Pers (Liste : IN T_Ptr_Pers);
 FUNCTION MeuilleurP(Listep: T_Ptr_Pers;Bingenieur:Boolean) RETURN T_Ptr_Pers;
-procedure liberer_pers(listeP: in t_ptr_pers; ID_Cherche : in T_identite);
+PROCEDURE Liberer_Pers(ListeP: IN T_Ptr_Pers; ID_Cherche : IN T_Identite);
+procedure charger_p(liste: in out T_ptr_pers);
 
 
 
