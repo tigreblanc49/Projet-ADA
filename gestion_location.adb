@@ -5,7 +5,8 @@ PACKAGE BODY Gestion_Location IS
 
 
    PROCEDURE Inserer(Tetel : IN OUT T_ptr_location;
-      Id : Natural;
+      Ids : Natural;
+      nump: integer;
       Client : T_identite;
       Duree : Integer;
       jd: integer;
@@ -28,7 +29,8 @@ PACKAGE BODY Gestion_Location IS
     Df.J := Jf;
     Df.M := Mf;
     Df.Annee := Af;
-    Nouveau.Id := Id;
+     Nouveau.Id := Ids;
+     nouveau.num:=nump;
     Nouveau.client := Client;
     Nouveau.Date_D :=Dd;
     Nouveau.Date_F :=Df;
@@ -36,36 +38,50 @@ PACKAGE BODY Gestion_Location IS
     nouveau.accompagnant:=accompagnant;
     Nouveau.Materiel :=Materiel;
     nouveau.noma:=noma;
-    nouveau.duree:=duree;
-    Tetel := new T_Cell_location'(Nouveau,tetel);
+    Nouveau.Duree:=Duree;
+    Inserer_Recursive(Tetel, Nouveau);
+
+
   END Inserer;
 
+PROCEDURE Inserer_Recursive(tete : IN OUT T_Ptr_Location; Nouv : IN T_Location) IS
+BEGIN
+
+   IF tete = NULL OR ELSE AvantD(Nouv.Date_F, tete.Val.Date_F) THEN
+      tete := new T_Cell_Location'(Nouv, tete);
+   ELSE
+
+      Inserer_Recursive(tete.Suiv, Nouv);
+   END IF;
+END Inserer_Recursive;
 
   PROCEDURE Charger_Donnees_L(Tetel : IN OUT T_Ptr_Location) IS
    Id_C : T_identite;
    Id_A : T_identite;
 
   BEGIN
-   id_C.Nom.Mot(1..6) := "Bartok"; Id_C.Nom.K := 6;
+     id_C.Nom.Mot(1..6) := "Bartok"; Id_C.Nom.K := 6;
    Id_C.Prenom.Mot(1..5) := "Belle"; Id_C.Prenom.K := 5;
    Id_A.Nom.Mot(1..6) := "Guerre"; Id_A.Nom.K := 6;
    Id_A.Prenom.Mot(1..6) := "Martin"; Id_A.Prenom.K := 6;
-   Inserer(Tetel, 7, Id_C, 2, 21, Avril, 2026, 22, Avril, 2026, 0, Technicien, Id_A, Sono);
-   id_C.Nom.Mot(1..5) := "aline"; Id_C.Nom.K := 5;
-   Id_C.Prenom.Mot(1..6) := "mouton"; Id_C.Prenom.K := 6;
-   Id_A.Nom.Mot(1..4) := "marc"; Id_A.Nom.K := 4;
-   Id_A.Prenom.Mot(1..6) := "aurele"; Id_A.Prenom.K := 6;
-   Inserer(Tetel, 1, Id_C, 6, 17, Avril, 2026, 22, Avril, 2026, 0, Ingenieur, Id_A, Lumiere);
-   id_C.Nom.Mot(1..4) := "jean"; Id_C.Nom.K := 4;
+   Inserer(Tetel, 7,7, Id_C, 2, 21, Avril, 2026, 22, Avril, 2026, 0, Technicien, Id_A, Sono);
+id_C.Nom.Mot(1..5) := "Aline"; Id_C.Nom.K := 5;
+   Id_C.Prenom.Mot(1..6) := "Mouton"; Id_C.Prenom.K := 6;
+   Id_A.Nom.Mot(1..6) := "Aurele"; Id_A.Nom.K := 6;
+   Id_A.Prenom.Mot(1..4) := "Marc"; Id_A.Prenom.K := 4;
+   Inserer(Tetel, 1,2, Id_C, 6, 17, Avril, 2026, 22, Avril, 2026, 0, Ingenieur, Id_A, Lumiere);
+id_C.Nom.Mot(1..4) := "jean"; Id_C.Nom.K := 4;
    Id_C.Prenom.Mot(1..3) := "arc"; Id_C.Prenom.K := 3;
    Id_A.Nom.Mot(1..2) := "  "; Id_A.Nom.K := 2;
    Id_A.Prenom.Mot(1..2) := "  "; Id_A.Prenom.K := 2;
-   Inserer(Tetel, 6, Id_C, 10, 14, Avril, 2026, 23, Avril, 2026, 0, Aucun, Id_A, Camera);
-   id_C.Nom.Mot(1..5) := "lucie"; Id_C.Nom.K := 5;
-   Id_C.Prenom.Mot(1..5) := "belle"; Id_C.Prenom.K := 5;
-   Id_A.Nom.Mot(1..3) := "luc"; Id_A.Nom.K := 3;
-   Id_A.Prenom.Mot(1..6) := "galvin"; Id_A.Prenom.K := 6;
-   Inserer(Tetel, 3, Id_C, 5, 20, Avril, 2026, 24, Avril, 2026, 0, ingenieur, Id_A, lumiere);
+   Inserer(Tetel, 6,8, Id_C, 10, 14, Avril, 2026, 23, Avril, 2026, 0, Aucun, Id_A, Camera);
+
+    id_C.Nom.Mot(1..5) := "Belle"; Id_C.Nom.K := 5;
+   Id_C.Prenom.Mot(1..5) := "Lucie"; Id_C.Prenom.K := 5;
+   Id_A.Nom.Mot(1..6) := "Galvin"; Id_A.Nom.K := 6;
+   Id_A.Prenom.Mot(1..3) := "Luc"; Id_A.Prenom.K := 3;
+   Inserer(Tetel, 3,9, Id_C, 5, 20, Avril, 2026, 24, Avril, 2026, 0, ingenieur, Id_A, lumiere);
+
 
 end Charger_Donnees_l;
 
@@ -74,6 +90,8 @@ end Charger_Donnees_l;
   BEGIN
      WHILE P/=NULL LOOP
         Put("numero : "); Put(" "); Put(P.Val.Id,1);New_Line;
+        Put("numero du pack : "); Put(" "); Put(P.Val.num,1);New_Line;
+
         put("nom du client");new_line;
         affi_identite(p.val.client);
         Put("voici la date de debut de location");new_line;
@@ -129,7 +147,8 @@ BEGIN
     Put("Date debut : "); Visudate(Loc.Date_D); New_Line;
     Put("Date fin : "); Visudate(Loc.Date_F); New_Line;
     Put("Duree : "); Put(Loc.Duree, 1); New_Line;
-    Put("Prestataire : "); Affi_Identite(Loc.Noma);
+   Put("Prestataire : "); Affi_Identite(Loc.Noma);
+   Put("numero du pack : "); put(Loc.num);
     Put("Materiel : "); Put(T_Type_Materiel'Image(Loc.Materiel)); New_Line;
     Put_Line("------------------------");
 END Affi_Une_Location;
@@ -192,16 +211,12 @@ BEGIN
    New_Line;
    Put_Line("EN COURS");
    Afficher_Loc_Employe(L_En_Cours, Nom_Emp);
-
-   New_Line;
    Put_Line(" (ARCHIVES)");
    Afficher_Loc_Employe(L_Archives, Nom_Emp);
-
-   Put_Line("-------------------------------");
    New_Line;
 END Visu_Par_Employe;
 
-PROCEDURE Archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT T_Ptr_Location; Date_Ref : IN T_Date; Racine_C   : IN OUT T_Ptr_Client; Liste_M    : IN OUT T_Ptr_Materiel; Liste_P : IN OUT T_Ptr_Pers) IS
+PROCEDURE Archivages(Liste_EC   : IN OUT T_Ptr_Location;    Liste_Arch : IN OUT T_Ptr_Location; Date_Ref : IN T_Date; Racine_C   : IN OUT T_Ptr_Client; Liste_M : IN OUT T_Ptr_Materiel; Liste_P : IN OUT T_Ptr_Pers) IS
    A_Archiver : T_Ptr_Location;
    Prix : Integer;
 
@@ -211,9 +226,12 @@ BEGIN
       IF AvantD(Liste_EC.Val.Date_F, Date_Ref) THEN
          Prix := Calculfacture(Liste_EC.Val);
          Mettre_A_Jour_Client(Racine_C, Liste_EC.Val.Client, Prix);
-         Liberer_Pack(Liste_M, Liste_EC.Val.Id);
+         Mettre_A_Jour_Materiel(Liste_M,Liste_EC.Val.num,Liste_EC.Val.Duree);
+         Liberer_Pack(Liste_M, Liste_EC.Val.num);
          IF Liste_EC.Val.Accompagnant /= Aucun THEN
-            Liberer_pers(Liste_P, Liste_EC.Val.Noma);
+
+            Ajouter_Jours_Et_Liberer(Liste_P, Liste_EC.Val.Noma, Liste_EC.Val.Duree);
+
          END IF;
 
         A_Archiver := Liste_EC;
@@ -222,12 +240,14 @@ BEGIN
         Liste_Arch := A_Archiver;
         Archivages(Liste_EC, Liste_Arch, Date_Ref, Racine_C, Liste_M, Liste_P);
       ELSE
-        Archivages(Liste_EC.Suiv, Liste_Arch, Date_Ref, Racine_C, Liste_M, Liste_P);
+
+    Archivages(Liste_EC.Suiv, Liste_Arch, Date_Ref, Racine_C, Liste_M, Liste_P);
       END IF;
    END IF;
 
 
-END Archivages;
+   END Archivages;
+
 
 
 pROCEDURE Traiter_File_Demandes(
@@ -254,41 +274,33 @@ BEGIN
       P_Mat := Meuilleurpa(Liste_M, D.Materiel);
       IF P_MAT /= NULL THEN
          Ok_MAT := True;
-
       ELSE
-
          Ok_MAT := False;
-
       END IF;
         IF D.Accompagnement /= Aucun THEN
             P_Pers := meuilleurp(Liste_P, (D.Accompagnement = Ingenieur));
          IF P_Pers /= NULL THEN
-
             Ok_Pers := True;
          ELSE
             Ok_Pers := False;
-
          END IF;
-
         ELSE
             P_Pers := NULL;
             Ok_Pers := True;
       END IF;
         IF Ok_Mat AND Ok_Pers THEN
             P_Mat.Val.Disponibilite := False;
-            P_Mat.Val.Nb_J_Utilisation := P_Mat.Val.Nb_J_Utilisation + D.Duree;
+--            P_Mat.Val.Nb_J_Utilisation := P_Mat.Val.Nb_J_Utilisation + D.Duree;
             IF P_Pers /= NULL THEN
                 P_Pers.Val.dispo := False;
-                P_Pers.Val.Nb_J_presta := P_Pers.Val.Nb_J_presta + D.Duree;
-            END IF;
 
-
-            Inserer_De_Demande(L_En_Cours, D, P_Mat.Val.id, P_Pers, Date_Jour,D.attente);
-
-            Put_Line("Demande satisfaite");
+         END IF;
+         D.attente:=Differenced(Date_Jour,D.date_dem);
+         Inserer_De_Demande(L_En_Cours, D, P_Mat.Val.Id, P_Pers, Date_Jour,D.Attente);
+         new_line;
+         Put("Demande satisfaite numero: ");put(D.id,1);new_line;
         ELSE
 
-         D.Attente := D.Attente + 1;
          Enfilerd(Faux, D);
         END IF;
    END LOOP;
@@ -298,8 +310,9 @@ END Traiter_File_Demandes;
 
 PROCEDURE Inserer_De_Demande(
     Tetel      : IN OUT T_Ptr_Location;
-    D          : IN T_demande;
-    Num_Pack   : IN Natural;
+   D          : IN T_Demande;
+   nump: in integer;
+
     P_Pers     : IN T_Ptr_Pers;
    Date_Debut : IN T_Date;
       attente_F: in integer) IS
@@ -310,7 +323,7 @@ PROCEDURE Inserer_De_Demande(
 BEGIN
 
     Date_Fin := Date_Debut;
-    FOR I IN 1..D.Duree LOOP
+    FOR I IN 1..D.Duree-1 LOOP
        date_fin:=lendemain(Date_Fin);
     END LOOP;
 
@@ -331,8 +344,9 @@ BEGIN
 
 
     Inserer(
-         Tetel,
-         Num_Pack,
+      Tetel,
+         D.id,
+         NumP,
          D.Client,
         D.Duree,
        Date_Debut.J,
@@ -360,12 +374,29 @@ procedure lendemaind(Date_j   : IN OUT T_Date;
 
 BEGIN
    Date_J:=Lendemain(Date_J);
+   put_line("passage au jour suivant");
    VisuDate(Date_j);
    put_line("---------");
    Archivages(L_En_Cours, L_Archive, date_j, Racine_C, Liste_M, Liste_P);
    Traiter_File_Demandes(F_Demandes, L_En_Cours, Liste_M, Liste_P, Date_J);
    Put_Line("mise a jours terminee");
 END Lendemaind;
+
+PROCEDURE Ajouter_Jours_Et_Liberer(Liste : IN T_Ptr_Pers; ID_Cherche : T_Identite; Jours : Integer) IS
+    P : T_Ptr_Pers := Liste;
+    B1, B2 : Boolean;
+BEGIN
+    WHILE P /= NULL LOOP
+        Meme_NP(P.Val.identite.Nom, ID_Cherche.Nom, B1);
+        Meme_NP(P.Val.identite.Prenom, ID_Cherche.Prenom, B2);
+        IF B1 AND B2 THEN
+            P.Val.Nb_J_presta := P.Val.Nb_J_presta + Jours;
+            P.Val.dispo := True;
+            EXIT;
+        END IF;
+        P := P.Suiv;
+    END LOOP;
+END Ajouter_Jours_Et_Liberer;
 
 
 END Gestion_Location;

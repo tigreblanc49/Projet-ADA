@@ -20,18 +20,22 @@ begin
     MJ(novembre):=31;
     MJ(decembre):=31;
 loop
-    put (" entrez le numero du jour ");New_Line;
+    put ("entrez le numero du jour ");New_Line;
     get(D.j);Skip_Line ;
     loop
         put("entrez le numero du mois"); new_line;
         get(num); skip_line;
         exit when  num <= 12 and num >= 1;
-        put_line(" le numero du mois n'exite pas");
+        put_line("le numero du mois n'exite pas");
     end loop;
     D.M:=T_nom_mois'val(num-1);
-
+    loop
     put("entrez le numero de l'annee");new_line;
-    get(D.annee);skip_line;
+    Get(D.Annee);Skip_Line;
+         EXIT WHEN D.Annee <= 3000  AND  D.Annee >= 2000 ;
+         Put_Line("le numero de l'annee incorect");
+      END LOOP;
+
     IF D.Annee MOD 4 = 0 AND (D.Annee MOD 100 /= 0 OR D.Annee MOD 400 = 0) THEN
         MJ(fevrier):=29;
     else
@@ -47,7 +51,7 @@ end saisirdate;
 
 procedure visudate(D: in T_date) is
 begin
-put("voici la date"); put("  :"); put(D.j,1);put("-");put(T_nom_mois'image(D.M));put("-");put(D.annee,1);
+put(D.j,1);put("-");put(T_nom_mois'image(D.M));put("-");put(D.annee,1);
 
 end visudate;
 
@@ -124,6 +128,42 @@ BEGIN
    END IF;
 
 END AvantD;
+
+FUNCTION Nombre_Jours (D: T_Date) return Integer IS
+   J:Integer:=D.j;
+   M:T_nom_Mois:=Janvier;
+BEGIN
+      WHILE M < D.M LOOP
+         j := j + JoursMois(M, D.Annee);
+         M := T_Nom_Mois'Succ(M);
+   END LOOP;
+
+   RETURN J;
+
+END Nombre_Jours;
+
+
+
+FUNCTION JoursMois(M : T_Nom_Mois; A : Integer) RETURN Integer IS
+   BEGIN
+      CASE M IS
+         WHEN Janvier | Mars | Mai | Juillet | Aout | Octobre | Decembre => RETURN 31;
+         WHEN Avril | Juin | Septembre | Novembre => RETURN 30;
+         WHEN Fevrier =>
+            IF (A MOD 4 = 0 AND A MOD 100 /= 0) OR (A MOD 400 = 0) THEN
+               RETURN 29;
+            ELSE
+               RETURN 28;
+            END IF;
+      END CASE;
+   END JoursMois;
+
+   FUNCTION Differenced(D1,D2: T_Date) RETURN Integer IS
+   BEGIN
+      RETURN
+         Nombre_Jours(D1)- Nombre_Jours(D2)-1;
+   END Differenced;
+
 
 
 END Gestion_Date;

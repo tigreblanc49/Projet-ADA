@@ -24,9 +24,9 @@ PACKAGE BODY Gestion_Materiel IS
       Choixd:Character;
       choixs:character;
    BEGIN
-      Nouveau.Id:=Maxid(Tete);
-      Put("le pack attribue est : "); Put(Nouveau.Id,1);New_Line;
-      Put("entrez le numero du pack voulue"); New_Line;
+      Nouveau.Id:=Maxid(Tete);new_line;
+      Put("le pack attribue est : "); Put(Nouveau.Id,1);new_line;
+      Put_line("entrez le numero du pack voulue");
       Put_Line(" 1 - Camera");
       Put_Line(" 2 - Plateforme");
       Put_Line(" 3 - Sono");
@@ -46,17 +46,17 @@ PACKAGE BODY Gestion_Materiel IS
       END CASE;
       Nouveau.Nb_J_Utilisation:=0;
 
-      Put_Line("es ce que le pack est disponible O/N"); New_Line;
+      Put_Line("es ce que le pack est disponible O/N");
       Get(Choixd);Skip_Line;
       IF Choixd='o' or choixd='O' THEN
          Nouveau.Disponibilite:=True;
       ELSE
          Nouveau.Disponibilite:=false;
       END IF;
-      Put("saisir la date de mise en service ");New_Line;
+      Put_line("saisir la date de mise en service ");
       Saisirdate(Nouveau.Date_Service);
 
-      Put_Line("date de suppression programme O/N"); New_Line;
+      Put_Line("date de suppression programme O/N");
       Get(Choixd);Skip_Line;
       IF Choixd='o' or choixd='O' THEN
          Nouveau.suppression:=True;
@@ -89,15 +89,15 @@ PACKAGE BODY Gestion_Materiel IS
 
    procedure Charger_Donnees_Initiales(Tete : in out T_Ptr_Materiel) is
    BEGIN
-    Inserer(Tete, 8, Camera, 18, Avril, 2026, False, false);
-    Inserer(Tete, 4, Camera, 17, Avril, 2026, True, false);
-    Inserer(Tete, 1, Camera, 15, Avril, 2025, True, false);
-    Inserer(Tete, 7, Sono, 18, Avril, 2026, False, false);
-    Inserer(Tete, 6, Sono, 17, Avril, 2026, True, False);
-    Inserer(Tete, 5, Projecteur, 17, Avril, 2026, True, false);
-    Inserer(Tete, 3, Projecteur, 16, Avril, 2026, True, false);
+ Inserer(Tete, 2, Lumiere, 15, Avril, 2026, False, False);
     Inserer(Tete, 9, Lumiere, 19, Avril, 2026, False, false);
-      Inserer(Tete, 2, Lumiere, 15, Avril, 2026, False, False);
+    Inserer(Tete, 3, Projecteur, 16, Avril, 2026, True, False);
+    Inserer(Tete, 5, Projecteur, 17, Avril, 2026, True, false);
+     Inserer(Tete, 6, Sono, 17, Avril, 2026, True, False);
+Inserer(Tete, 7, Sono, 18, Avril, 2026, False, false);
+Inserer(Tete, 1, Camera, 15, Avril, 2025, True, false);
+Inserer(Tete, 4, Camera, 17, Avril, 2026, True, false);
+ Inserer(Tete, 8, Camera, 18, Avril, 2026, False, false);
       Put_Line("chargement reussi");
 
 
@@ -132,34 +132,50 @@ end Charger_Donnees_Initiales;
 
    PROCEDURE Suppack(Tete: IN OUT T_Ptr_Materiel; num: in integer; cat: in T_type_materiel) IS
    BEGIN
-      IF Tete=NULL THEN
-         Put("liste vide");
-      END IF;
+      IF Tete/=NULL THEN
+--         Put("le numero n'exite pas");
+--         return;
+--      END IF;
 
          IF Tete.Val.Id=Num AND Tete.Val.Mat=Cat THEN
             IF Tete.Val.Disponibilite=True THEN
-               Tete:=Tete.Suiv;
+            Tete:=Tete.Suiv;
+            Put_Line("pack supprimee");
             ELSE
-               Tete.Val.Suppression:=True;
+            tete.val.suppression:=true;
+               Put_Line("Pack occupe : suppression programmee pour la fin de la location.");
+               put(tete.val.id);
             END IF;
          ELSE
-
          Suppack(Tete.Suiv, num, cat);
-      END IF;
+         END IF;
+      ELSE
+         Put_Line("le numero n'exite pas");
+         end if;
    END Suppack;
 
 
    PROCEDURE SuppackD(Tete: IN OUT T_Ptr_Materiel; D2: IN T_Date) IS
-
    BEGIN
       IF Tete/=NULL THEN
          IF  AvantD(Tete.Val.Date_Service,D2)=True THEN
+            IF Tete.Val.Disponibilite=True THEN
                Tete:=Tete.Suiv;
+
                SuppackD(Tete,D2);
             ELSE
+               Put("Demande enregistree pour le pack numero");put(" "); put(Tete.Val.Id,1);new_line;
+               Tete.Val.Suppression := True;
                SuppackD(Tete.Suiv,D2);
+            END IF;
+
+         ELSE
+            SuppackD(Tete.Suiv, D2);
          END IF;
-     END IF;
+      ELSE
+         null;
+      END IF;
+
 
    END SuppackD;
 
@@ -169,12 +185,14 @@ end Charger_Donnees_Initiales;
    BEGIN
       WHILE P/=NULL LOOP
          IF P.Val.Disponibilite=True THEN
-            Put(P.Val.Id,1);
+            Put(P.Val.Id,2);put(",");
          END IF;
-         put(" ");
          P:=P.Suiv;
+--         put(" ");
       END LOOP;
+      new_line;
    END Visupackdispo;
+
    FUNCTION Meuilleurpa(Pa: T_Ptr_Materiel; cat: T_type_materiel) RETURN T_Ptr_Materiel IS
       P:T_Ptr_Materiel:=Pa;
       M:T_ptr_materiel:=null;
@@ -192,19 +210,49 @@ end Charger_Donnees_Initiales;
    END Meuilleurpa;
 
 
-   PROCEDURE Liberer_Pack(Tete: T_Ptr_Materiel;Npack: natural) IS
+   PROCEDURE Liberer_Pack(Tete: in out T_Ptr_Materiel;Npack: in natural) IS
       P:T_Ptr_Materiel:=Tete;
    BEGIN
       WHILE P/=NULL LOOP
          IF P.Val.Id=Npack THEN
             P.Val.Disponibilite:=True;
+            IF P.Val.Suppression = True THEN
+            Put_Line(" ce pack etait en attente de suppression. Suppression a été effectuee."); put_line("il sagit du pack ");put(Npack);
+            Suppack(tete,Npack, P.Val.Mat);
+            END IF;
             exit;
          END IF;
          P:=P.suiv;
       END LOOP;
    END Liberer_Pack;
 
+   PROCEDURE Mettre_A_Jour_Materiel(tete : IN OUT T_Ptr_Materiel; ID_Mat : Integer; Jours : Integer) IS
 
+BEGIN
+
+   IF tete= NULL THEN
+
+      return;
+
+   END IF;
+
+
+   IF tete.Val.Id = ID_Mat THEN
+
+      tete.Val.Nb_J_Utilisation := tete.Val.Nb_J_Utilisation + Jours;
+
+
+      IF tete.Val.Suppression THEN
+         tete:= tete.Suiv;
+      ELSE
+         tete.Val.Disponibilite := True;
+      END IF;
+
+      return;
+   END IF;
+
+   Mettre_A_Jour_Materiel(tete.Suiv, ID_Mat, Jours);
+END Mettre_A_Jour_Materiel;
 
 
 END Gestion_Materiel;

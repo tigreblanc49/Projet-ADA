@@ -23,23 +23,40 @@ procedure saisie_pers(P : out t_pers) is
 end saisie_pers;
 
 Procedure ajout_pers (Liste : in out t_ptr_pers; P : in T_pers) is
-    B1,B2 : boolean;
-    begin
-    if liste = null then
-        liste := new t_cell_pers'(p,null);
-    else
-        Meme_NP (Liste.val.identite.Nom,P.identite.nom,B1);
-        Meme_NP (Liste.val.identite.Prenom, P.identite.Prenom,B2);
-        if B1 = true and then B2 = true then
-            If Liste.val.ingenieur = P.ingenieur then
-                Put("Un membre du personnel existe deja avec ces identifiants et le mÃªme role."); new_line;
-            else
-                ajout_pers (Liste.suiv, P );
-            end if;
-        else
-            ajout_pers(Liste.suiv, P);
+   B1,B2 : Boolean;
+   po:T_ptr_pers:=liste;
+BEGIN
+
+while Po /= null loop
+        Meme_NP (Po.val.identite.Nom, P.identite.nom, B1);
+        Meme_NP (Po.val.identite.Prenom, P.identite.Prenom, B2);
+
+      IF (B1 AND B2) and then (Po.val.ingenieur = P.ingenieur) then
+            Put_Line("Erreur : Ce membre du personnel existe deja avec ce role.");
+            exit;
         end if;
-    end if;
+
+        Po:= Po.suiv;
+    end loop;
+
+
+    Liste := new t_cell_pers'(P, Liste);
+
+--    if liste = null then
+--        liste := new t_cell_pers'(p,null);
+--    else
+--        Meme_NP (Liste.val.identite.Nom,P.identite.nom,B1);
+--        Meme_NP (Liste.val.identite.Prenom, P.identite.Prenom,B2);
+--        if B1 = true and then B2 = true then
+--            If Liste.val.ingenieur = P.ingenieur then
+--                Put("Un membre du personnel existe deja avec ces identifiants et le même role."); new_line;
+--            else
+--                ajout_pers (Liste.suiv, P );
+--             END IF;
+--          ELSE
+--             ajout_pers (Liste.suiv, P);
+--        end if;
+--    end if;
 end ajout_pers;
 
 procedure ajout_pers_liste (liste : in out t_ptr_pers) is
@@ -76,8 +93,6 @@ procedure visu_pers (Liste : in t_ptr_pers) is
     put("-----------------------------------"); new_line;
     affi_pers (Liste.val);
     visu_pers (Liste.suiv);
-    else
-    put("-----------------------------------"); new_line;
     end if;
 end visu_pers;
 
@@ -87,15 +102,13 @@ begin
     if liste /= null then
         Meme_NP (Liste.Val.identite.Nom, P.identite.Nom, B1);
         Meme_NP (Liste.Val.identite.Prenom,P.identite.Prenom, B2);
-        if B1 = true and then B2 = true then
-            if Liste.val.ingenieur = P.ingenieur and then P.dispo = true then
+      IF (B1 = True AND B2 = True) AND THEN (Liste.Val.Ingenieur = P.Ingenieur) THEN
+         if liste.val.dispo = true then
                 liste := liste.suiv;
                 Put("Personnel supprime de la liste avec succes"); new_line;
-            elsif Liste.val.ingenieur = P.ingenieur and then P.dispo = false then
-                P.depart := true;
-                put("La demande de suppression a ete enregistree et sera effectuee quand l'employe reviendra de mission"); new_line;
             else
-                del_pers (Liste.suiv, P);
+                liste.val.depart := true;
+                put("La demande de suppression a ete enregistree et sera effectuee quand l'employe reviendra de mission"); new_line;
             end if;
         else
             del_pers (Liste.suiv, P);
@@ -180,15 +193,16 @@ begin
             if Meilleur = null or else P.val.Nb_J_presta < Meilleur.val.Nb_J_presta then
                 Meilleur := P;
             end if;
-            exit when Meilleur.val.Nb_J_presta = 0;
+--            exit when Meilleur.val.Nb_J_presta = 0;
       END IF;
      P := P.suiv;
     end loop;
     return Meilleur;
 END Meuilleurp;
+
 PROCEDURE Liberer_Pers(ListeP: T_Ptr_Pers; ID_Cherche : IN T_Identite) IS
 
-P : t_ptr_pers := Liste;
+P : t_ptr_pers := listep;
 B1, B2 : Boolean;
 begin
    while P /= null loop
@@ -201,7 +215,56 @@ begin
       end if;
       P := P.Suiv;
    end loop;
-end Liberer_pers;
+END Liberer_Pers;
+
+
+PROCEDURE Charger_P(liste: in OUT T_Ptr_Pers) IS
+   ID: T_Identite;
+   P1: T_Pers;
+
+BEGIN
+ID.Nom.K := 6;
+ID.Nom.Mot(1..6) :="Galvin";
+ID.Prenom.K := 3;
+ID.Prenom.Mot(1..3) :="Luc";
+P1.identite := ID;
+P1.dispo := false;
+P1.ingenieur := true;
+P1.Nb_J_presta := 0;
+P1.depart := false;
+ajout_pers (Liste, P1);
+ID.Nom.K := 6;
+ID.Nom.Mot(1..6) :="Aurele";
+ID.Prenom.K := 4;
+ID.Prenom.Mot(1..4) :="Marc";
+P1.identite := ID;
+P1.dispo := false;
+P1.ingenieur := true;
+P1.Nb_J_presta := 0;
+P1.depart := false;
+ajout_pers (Liste, P1);
+ID.Nom.K := 6;
+ID.Nom.Mot(1..6) :="Guerre";
+ID.Prenom.K := 6;
+ID.Prenom.Mot(1..6) :="Martin";
+P1.identite := ID;
+P1.dispo := false;
+P1.ingenieur := false;
+P1.Nb_J_presta := 0;
+P1.depart := false;
+ajout_pers (Liste, P1);
+ID.Nom.K := 3;
+ID.Nom.Mot(1..3) :="Fer";
+ID.Prenom.K := 5;
+ID.Prenom.Mot(1..5) :="Lucie";
+P1.identite := ID;
+P1.dispo := true;
+P1.ingenieur := false;
+P1.Nb_J_presta := 0;
+P1.depart := false;
+   Ajout_Pers (Liste, P1);
+END Charger_P;
+
 
 
 END Gestion_Personnel;

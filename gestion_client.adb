@@ -36,7 +36,7 @@ Rootsupp : Boolean;
    begin
       if Root = null then
       Root := new T_cell_client'(NC, null, null);
-      Put("Le client a ete ajoute avec succes"); new_line;
+--      Put("Le client a ete ajoute avec succes"); new_line;
       else
          comp_identite (Root.val.client,NC.client, Rootsupp);
          if Rootsupp = false then
@@ -74,7 +74,7 @@ end Affi_arbre;
 
 procedure Mettre_A_Jour_Client(Root : in out T_ptr_Client;
                                ID_Cherche : in T_identite;
-                               Montant : in Float) is
+                               Montant : in integer) is
    Trouve_Nom, Trouve_Prenom : Boolean;
    Go_Gauche : Boolean;
 begin
@@ -101,10 +101,10 @@ PROCEDURE Chargerabre(Arbre: IN OUT T_Ptr_Client) IS
    C1 : T_client;
 BEGIN
 
-   ID.Nom.K := 6;
-ID.Nom.Mot(1..6) :="Mouton";
-ID.Prenom.K := 5;
-ID.Prenom.Mot(1..5) :="Aline";
+ID.Nom.K := 5;
+ID.Nom.Mot(1..5) :="Aline";
+ID.Prenom.K := 6;
+ID.Prenom.Mot(1..6) :="Mouton";
 C1.client := id;
 C1.Facture := 0;
 C1.Montant_regle := 0;
@@ -128,10 +128,10 @@ C1.Facture := 0;
 C1.Montant_regle := 0;
 C1.Nb_loc :=0;
 Ajout_client (arbre, C1);
-ID.Nom.K := 3;
-ID.Nom.Mot(1..3) :="Arc";
-ID.Prenom.K := 4;
-ID.Prenom.Mot(1..4) :="Jean";
+ID.Nom.K := 4;
+ID.Nom.Mot(1..4) :="jean";
+ID.Prenom.K := 3;
+ID.Prenom.Mot(1..3) :="arc";
 C1.client := id;
 C1.Facture := 0;
 C1.Montant_regle := 0;
@@ -164,15 +164,15 @@ C1.Facture := 0;
 C1.Montant_regle := 0;
 C1.Nb_loc :=0;
 Ajout_client (arbre, C1);
-ID.Nom.K := 5;
-ID.Nom.Mot(1..5) :="Cadet";
-ID.Prenom.K := 9;
-ID.Prenom.Mot(1..9) :="Benjamine";
-C1.client := id;
-C1.Facture := 0;
-C1.Montant_regle := 0;
-C1.Nb_loc :=0;
-Ajout_client (arbre, C1);
+--ID.Nom.K := 5;
+--ID.Nom.Mot(1..5) :="Cadet";
+--ID.Prenom.K := 9;
+--ID.Prenom.Mot(1..9) :="Benjamine";
+--C1.client := id;
+--C1.Facture := 0;
+--C1.Montant_regle := 0;
+--C1.Nb_loc :=0;
+--Ajout_client (arbre, C1);
 ID.Nom.K := 5;
 ID.Nom.Mot(1..5) :="Rebel";
 ID.Prenom.K := 6;
@@ -193,6 +193,37 @@ C1.Nb_loc :=0;
 Ajout_client (arbre, C1);
 
 end chargerabre;
+PROCEDURE Reglement(A: IN OUT T_Ptr_Client;Montant_Paye: IN Integer; Identite: IN T_Identite) IS
+nom,prenom: boolean; gauche:boolean;
+BEGIN
+   IF A=NULL THEN
+      Put("arbre vide"); New_Line;
+   ELSE
+      Meme_NP(A.Val.client.nom, identite.nom, nom);
+      Meme_NP(A.Val.Client.Prenom, Identite.Prenom, Prenom);
+      IF Nom AND Prenom THEN
+         IF Montant_Paye > A.Val.Facture THEN
+            Put("erreur le montant paye ne peut pas etre superieur a la facture");New_Line;
+         ELSE
+            A.Val.Facture := A.Val.Facture - Montant_Paye;
+            A.Val.Montant_regle := A.Val.Montant_regle + Montant_Paye;
+            Put_Line("Reglement enregistre avec succes.");
+         END IF;
+      ELSE
+         Comp_Identite(A.Val.Client, identite, Gauche);
+         IF Gauche THEN
+            Reglement(A.Sg,Montant_Paye,identite);
+         ELSE
+            Reglement(A.Sd, Montant_Paye, identite);
+         END IF;
+      END IF;
+   END IF;
+
+END Reglement ;
+
+
+
+
 
 
 end Gestion_Client;

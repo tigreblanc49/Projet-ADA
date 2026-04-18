@@ -25,5 +25,6 @@ PROCEDURE Affi_Arbre (Root : IN T_Ptr_Client);
 procedure chargerabre(arbre: in out T_ptr_client);
 procedure Mettre_A_Jour_Client(Root : in out T_ptr_Client;
                                ID_Cherche : in T_identite;
-                               Montant : in integer);
+   Montant : IN Integer);
+procedure reglement(A: in out T_ptr_client;montant_paye: in integer; identite: in T_identite);
 end Gestion_Client;

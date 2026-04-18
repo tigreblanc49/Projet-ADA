@@ -34,7 +34,8 @@ PACKAGE Gestion_Demandes IS
    procedure visuF(F: in  T_file_demande);
    PROCEDURE Nouveldemande(F: in out T_File_Demande ; AC : in out T_ptr_Client; D: IN OUT  T_Demande);
    PROCEDURE Enfilern(F: IN OUT T_File_Demande ;D: IN OUT T_Demande);
-   PROCEDURE Suppdl(Tete: IN OUT T_Ptr_Demande ;N: IN Integer);
+   procedure supp(tete: in out T_ptr_demande; N : IN Integer; Trouve : OUT Boolean);
+   PROCEDURE Suppdl(F: IN OUT T_file_Demande ;N: IN Integer);
 
 end gestion_demandes;
 

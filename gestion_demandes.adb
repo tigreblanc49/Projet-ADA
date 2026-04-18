@@ -67,10 +67,10 @@ PACKAGE BODY Gestion_Demandes IS
       D.Date_Dem.Annee:=2026;
       D.Accompagnement:=ingenieur;
       D.Materiel:=Camera;
-      D.Client.Nom.Mot(1..8) := "juliette";
-      D.Client.Nom.K := 8;
-      D.Client.Prenom.Mot(1..5) := "Romeo";
-      D.Client.Prenom.K := 5;
+      D.Client.Nom.Mot(1..5) := "Romeo";
+      D.Client.Nom.K := 5;
+      D.Client.Prenom.Mot(1..8) := "Juliette";
+      D.Client.Prenom.K := 8;
       Enfilerd(F,D);
       D.id:=5;
       D.Duree:=3;
@@ -79,10 +79,10 @@ PACKAGE BODY Gestion_Demandes IS
       D.Date_Dem.Annee:=2026;
       D.Accompagnement:=ingenieur;
       D.Materiel:=Camera;
-      D.Client.Nom.Mot(1..4) := "lily";
-      D.Client.Nom.K := 4;
-      D.Client.Prenom.Mot(1..8) := "Tigresse";
-      D.Client.Prenom.K := 8;
+      D.Client.Nom.Mot(1..8) := "Tigresse";
+      D.Client.Nom.K := 8;
+      D.Client.Prenom.Mot(1..4) := "Lily";
+      D.Client.Prenom.K := 4;
       Enfilerd(F,D);
       D.id:=8;
       D.Duree:=2;
@@ -91,10 +91,10 @@ PACKAGE BODY Gestion_Demandes IS
       D.Date_Dem.Annee:=2026;
       D.Accompagnement:=technicien;
       D.Materiel:=Lumiere;
-      D.Client.Nom.Mot(1..7) := "josette";
-      D.Client.Nom.K := 7;
-      D.Client.Prenom.Mot(1..6) := "Dubois";
-      D.Client.Prenom.K := 6;
+      D.Client.Nom.Mot(1..6) := "Dubois";
+      D.Client.Nom.K := 6;
+      D.Client.Prenom.Mot(1..7) := "Josette";
+      D.Client.Prenom.K := 7;
       Enfilerd(F,D);
       D.id:=9;
       D.Duree:=4;
@@ -103,10 +103,10 @@ PACKAGE BODY Gestion_Demandes IS
       D.Date_Dem.Annee:=2026;
       D.Accompagnement:=technicien;
       D.Materiel:=Lumiere;
-      D.Client.Nom.Mot(1..4) := "lily";
-      D.Client.Nom.K := 4;
-      D.Client.Prenom.Mot(1..8) := "Tigresse";
-      D.Client.Prenom.K := 8;
+      D.Client.Nom.Mot(1..8) := "Tigresse";
+      D.Client.Nom.K := 8;
+      D.Client.Prenom.Mot(1..4) := "Lily";
+      D.Client.Prenom.K := 4;
       Enfilerd(F,D);
       D.id:=10;
       D.Duree:=2;
@@ -115,10 +115,10 @@ PACKAGE BODY Gestion_Demandes IS
       D.Date_Dem.Annee:=2026;
       D.Accompagnement:=ingenieur;
       D.Materiel:=Sono;
-      D.Client.Nom.Mot(1..6) := "Alicia";
-      D.Client.Nom.K := 6;
-      D.Client.Prenom.Mot(1..5) := "Rebel";
-      D.Client.Prenom.K := 5;
+      D.Client.Nom.Mot(1..5) := "Rebel";
+      D.Client.Nom.K := 5;
+      D.Client.Prenom.Mot(1..6) := "Alicia";
+      D.Client.Prenom.K := 6;
       Enfilerd(F,D);
       --TYPE T_Type_Materiel IS(Camera, Plateforme, Sono,Projecteur,Lumiere);
 
@@ -210,17 +210,34 @@ PACKAGE BODY Gestion_Demandes IS
       enfilern(F,D);
    END Nouveldemande;
 
-   PROCEDURE Suppdl(tete: IN OUT T_ptr_Demande ;N: IN Integer) IS
-   BEGIN
-      IF Tete/=NULL THEN
-         IF Tete.Val.Id=N THEN
-            Tete:=Tete.Suiv;
 
-         ELSE
-            Suppdl(Tete.Suiv,N);
+
+   PROCEDURE Supp(Tete: IN OUT T_Ptr_Demande; N : IN Integer; Trouve : OUT Boolean) IS
+   BEGIN
+      IF Tete = NULL THEN
+         Trouve := False;
+      ELSIF tete.Val.Id = N THEN
+         Tete:= Tete.Suiv;
+         Trouve := True;
+      ELSE
+         Supp(tete.Suiv, N, Trouve);
+   END IF;
+   END Supp;
+
+   PROCEDURE Suppdl(F: IN OUT T_File_Demande ;N: IN Integer) IS
+      Ok : Boolean := False;
+   BEGIn
+      Supp(F.tete,N,ok);
+      IF ok THEN
+         Put_Line("La demande a ete supprimee.");
+         IF F.Tete = NULL THEN
+         F.Fin := NULL;
+         END IF;
+      ELSE
+         Put("Il n'y a pas de demande en attente avec le numero ");
 
          END IF;
-      END IF;
+
 
    END Suppdl;
 
