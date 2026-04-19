@@ -290,7 +290,6 @@ BEGIN
       END IF;
         IF Ok_Mat AND Ok_Pers THEN
             P_Mat.Val.Disponibilite := False;
---            P_Mat.Val.Nb_J_Utilisation := P_Mat.Val.Nb_J_Utilisation + D.Duree;
             IF P_Pers /= NULL THEN
                 P_Pers.Val.dispo := False;
 
@@ -326,8 +325,6 @@ BEGIN
     FOR I IN 1..D.Duree-1 LOOP
        date_fin:=lendemain(Date_Fin);
     END LOOP;
-
-
     IF P_Pers = NULL THEN
         Identite_Nulle.Nom.K := 0;
         Identite_Nulle.Prenom.K := 0;
@@ -339,10 +336,6 @@ BEGIN
       ELSE
       no:=Identite_Nulle;
       END IF;
-
-
-
-
     Inserer(
       Tetel,
          D.id,

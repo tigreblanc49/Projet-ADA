@@ -3,7 +3,6 @@ USE  Ada.Text_Io, Ada.Integer_Text_Io;
 
 PACKAGE BODY Gestion_Identite IS
 
-
 procedure Saisie_NP (NP : out T_nomPnom) is
    begin
    Get_Line(NP.mot,NP.k);
@@ -36,67 +35,47 @@ end affi_identite;
 procedure Meme_NP (I1,I2 : in T_nomPnom; Meme : out boolean) is
    begin
    meme := true;
-   if I1.K /= I2.K then
+   if I1.K /= I2.K then --Verification  si la taille des noms et prenoms diffÃ¨re
    Meme := false;
    else
    for i in 1..I1.K loop
-      if I1.Mot(i) /= I2.Mot(i) then
+      if I1.Mot(i) /= I2.Mot(i) then --Si un caractÃ¨re diffÃ¨re alors le boolean passe en false
          Meme := false;
       end if;
    end loop;
    end if;
    END Meme_Np;
 
-
---PROCEDURE comp_identite (I1, I2 : IN T_Identite; I1Superieur : OUT Boolean) IS
---BEGIN
---   -- 1. On compare d'abord les Noms
---   -- On extrait la partie utile du mot grâce à l'indice K
---   IF I1.Nom.Mot(1..I1.Nom.K) > I2.Nom.Mot(1..I2.Nom.K) THEN
---      I1Superieur := True;
---   ELSIF I1.Nom.Mot(1..I1.Nom.K) < I2.Nom.Mot(1..I2.Nom.K) THEN
---      I1Superieur := False;
---   ELSE
---      -- 2. Si les Noms sont identiques, on compare les Prénoms
---      IF I1.Prenom.Mot(1..I1.Prenom.K) > I2.Prenom.Mot(1..I2.Prenom.K) THEN
---         I1Superieur := True;
---      ELSE
---         -- Si Prénoms identiques ou I2 supérieur, on renvoie False
---         I1Superieur := False;
---      END IF;
---   END IF;
---END comp_identite;
-
 procedure comp_identite (I1,I2 : in T_identite; I1superieur : out Boolean) is
    n : integer;
    buffer : boolean;
    begin
-      I1superieur := true;
-      Meme_NP (I1.Nom,I2.Nom, buffer);
+      I1superieur := true; -- On part du principe que I1 > I2, si I2 est plus grand que I1 alors le boolean passera en false
+      Meme_NP (I1.Nom,I2.Nom, buffer); -- on verifie si les noms sont identiques
       if buffer = false then
-         if I1.Nom.K > I2.Nom.K then
+         if I1.Nom.K > I2.Nom.K then -- On prends la longueur de nom la plus courte
             n := I2.nom.K;
          else
             n := I1.Nom.K;
          end if;
          for i in 1..n loop
-            If I2.Nom.Mot(i) > I1.Nom.Mot(i) and then I1superieur = true then
+            If I2.Nom.Mot(i) > I1.Nom.Mot(i) and then I1superieur = true then -- on compare les caractÃ¨res, si I2 est plus grand que I1 alors on passe I1superieur en false
             I1superieur := false;
             exit;
             end if;
          end loop;
-      else
-         Meme_NP (I1.Prenom,I2.Prenom, buffer);
+      else -- si les noms sont identiques on compare les prÃ©noms
+         Meme_NP (I1.Prenom,I2.Prenom, buffer); -- on verifie si les prenoms sont identiques
          if buffer = true then
-            I1superieur := False;
+            I1superieur := False; --le boolean passe en false pour que la valeur parte a gauche de l'ABR
          else
-            if I1.Prenom.K > I2.Prenom.K then
+            if I1.Prenom.K > I2.Prenom.K then --comparaison a nouveau effectuÃ©e sur la chaine la plus courte
             n := I2.Prenom.K;
             else
             n := I1.Prenom.K;
             end if;
             for i in 1..n loop
-               If I2.Prenom.Mot(i) > I1.Prenom.Mot(i) and then I1superieur = true then
+               If I2.Prenom.Mot(i) > I1.Prenom.Mot(i) and then I1superieur = true then --mÃªme principe que pour les prÃ©noms
                I1superieur := false;
                exit;
                end if;
@@ -104,55 +83,4 @@ procedure comp_identite (I1,I2 : in T_identite; I1superieur : out Boolean) is
          end if;
       end if;
 end comp_identite;
-
-
-
---procedure comp_identite (I1, I2 : in T_identite; I1superieur : out Boolean) is
---   n : integer;
---   buffer : boolean;
---begin
---   Meme_NP (I1.Nom, I2.Nom, buffer);
---
---   if buffer = false then
---      -- On prend la taille du mot le plus court pour ne pas déborder
---      if I1.Nom.K > I2.Nom.K then n := I2.nom.K; else n := I1.Nom.K; end if;
-
---      for i in 1..n loop
---         if I1.Nom.Mot(i) > I2.Nom.Mot(i) then
---            I1superieur := true;
---            return; -- On a trouvé, on quitte la procédure
---         elsif I2.Nom.Mot(i) > I1.Nom.Mot(i) then
---            I1superieur := false;
---            return; -- On a trouvé, on quitte la procédure
---         end if;
---      end loop;
---
---      -- Si on arrive ici, c'est que les n premières lettres sont pareilles
---      -- Le plus long est alors le "plus grand"
---      I1superieur := (I1.Nom.K > I2.Nom.K);
-
---   else
---      -- Les noms sont identiques, on compare les prénoms
---      Meme_NP (I1.Prenom, I2.Prenom, buffer);
---      if buffer = true then
---         I1superieur := false; -- Strictement identiques
---      else
---         if I1.Prenom.K > I2.Prenom.K then n := I2.Prenom.K; else n := I1.Prenom.K; end if;
-
---         for i in 1..n loop
---            if I1.Prenom.Mot(i) > I2.Prenom.Mot(i) then
---               I1superieur := true;
---               return;
---            elsif I2.Prenom.Mot(i) > I1.Prenom.Mot(i) then
---               I1superieur := false;
---               return;
---            end if;
---         end loop;
---         I1superieur := (I1.Prenom.K > I2.Prenom.K);
---      end if;
---   end if;
---end comp_identite;
-
-
-
 End Gestion_identite;
