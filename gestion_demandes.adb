@@ -235,20 +235,8 @@ PACKAGE BODY Gestion_Demandes IS
          END IF;
       ELSE
          Put("Il n'y a pas de demande en attente avec le numero ");
-
          END IF;
-
-
    END Suppdl;
-
-
-
-
-
-
-
-
-
 
 END Gestion_Demandes;
 

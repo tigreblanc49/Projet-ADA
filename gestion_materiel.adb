@@ -133,10 +133,6 @@ end Charger_Donnees_Initiales;
    PROCEDURE Suppack(Tete: IN OUT T_Ptr_Materiel; num: in integer; cat: in T_type_materiel) IS
    BEGIN
       IF Tete/=NULL THEN
---         Put("le numero n'exite pas");
---         return;
---      END IF;
-
          IF Tete.Val.Id=Num AND Tete.Val.Mat=Cat THEN
             IF Tete.Val.Disponibilite=True THEN
             Tete:=Tete.Suiv;
@@ -217,7 +213,7 @@ end Charger_Donnees_Initiales;
          IF P.Val.Id=Npack THEN
             P.Val.Disponibilite:=True;
             IF P.Val.Suppression = True THEN
-            Put_Line(" ce pack etait en attente de suppression. Suppression a été effectuee."); put_line("il sagit du pack ");put(Npack);
+            Put_Line(" ce pack etait en attente de suppression. Suppression a ï¿½tï¿½ effectuee."); put_line("il sagit du pack ");put(Npack);
             Suppack(tete,Npack, P.Val.Mat);
             END IF;
             exit;

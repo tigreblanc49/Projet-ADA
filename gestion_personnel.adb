@@ -7,7 +7,7 @@ procedure saisie_pers(P : out t_pers) is
     Car : Character;
     begin
     Saisie_identite (P.identite);
-    loop
+    loop --boucle de saisie securisee du type de personnel
     Put("Role du personnel : Ingenieur (1) ou Technicien (2) ?"); new_line;
     get(car);
     case car is
@@ -28,35 +28,15 @@ Procedure ajout_pers (Liste : in out t_ptr_pers; P : in T_pers) is
 BEGIN
 
 while Po /= null loop
-        Meme_NP (Po.val.identite.Nom, P.identite.nom, B1);
-        Meme_NP (Po.val.identite.Prenom, P.identite.Prenom, B2);
-
+        Meme_NP (Po.val.identite.Nom, P.identite.nom, B1); --on cherche si il y a une correspondance de noms
+        Meme_NP (Po.val.identite.Prenom, P.identite.Prenom, B2); --Idem mais pour les prenoms
       IF (B1 AND B2) and then (Po.val.ingenieur = P.ingenieur) then
             Put_Line("Erreur : Ce membre du personnel existe deja avec ce role.");
             exit;
         end if;
-
         Po:= Po.suiv;
     end loop;
-
-
     Liste := new t_cell_pers'(P, Liste);
-
---    if liste = null then
---        liste := new t_cell_pers'(p,null);
---    else
---        Meme_NP (Liste.val.identite.Nom,P.identite.nom,B1);
---        Meme_NP (Liste.val.identite.Prenom, P.identite.Prenom,B2);
---        if B1 = true and then B2 = true then
---            If Liste.val.ingenieur = P.ingenieur then
---                Put("Un membre du personnel existe deja avec ces identifiants et le même role."); new_line;
---            else
---                ajout_pers (Liste.suiv, P );
---             END IF;
---          ELSE
---             ajout_pers (Liste.suiv, P);
---        end if;
---    end if;
 end ajout_pers;
 
 procedure ajout_pers_liste (liste : in out t_ptr_pers) is
@@ -100,13 +80,13 @@ procedure del_pers (Liste : in out t_ptr_pers; P : in out T_pers) is
     b1,B2 : boolean;
 begin
     if liste /= null then
-        Meme_NP (Liste.Val.identite.Nom, P.identite.Nom, B1);
-        Meme_NP (Liste.Val.identite.Prenom,P.identite.Prenom, B2);
+        Meme_NP (Liste.Val.identite.Nom, P.identite.Nom, B1); -- on cherche une correspondance de noms
+        Meme_NP (Liste.Val.identite.Prenom,P.identite.Prenom, B2); -- idem pour les prenoms
       IF (B1 = True AND B2 = True) AND THEN (Liste.Val.Ingenieur = P.Ingenieur) THEN
          if liste.val.dispo = true then
                 liste := liste.suiv;
                 Put("Personnel supprime de la liste avec succes"); new_line;
-            else
+            else --Si le presonnel est en mission on enregistre la demande
                 liste.val.depart := true;
                 put("La demande de suppression a ete enregistree et sera effectuee quand l'employe reviendra de mission"); new_line;
             end if;
@@ -193,7 +173,6 @@ begin
             if Meilleur = null or else P.val.Nb_J_presta < Meilleur.val.Nb_J_presta then
                 Meilleur := P;
             end if;
---            exit when Meilleur.val.Nb_J_presta = 0;
       END IF;
      P := P.suiv;
     end loop;
@@ -201,14 +180,12 @@ begin
 END Meuilleurp;
 
 PROCEDURE Liberer_Pers(ListeP: T_Ptr_Pers; ID_Cherche : IN T_Identite) IS
-
 P : t_ptr_pers := listep;
 B1, B2 : Boolean;
 begin
    while P /= null loop
       Meme_NP(P.Val.identite.Nom, ID_Cherche.Nom, B1);
       Meme_NP(P.Val.identite.Prenom, ID_Cherche.Prenom, B2);
-
       if B1 and B2 then
          P.Val.dispo := True;
          exit;
